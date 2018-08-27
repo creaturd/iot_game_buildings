@@ -6,10 +6,10 @@ DevTypeCount = 4;
 var ResetLevelIfNotContinuous = false;
 
 Limits = [
-	10000,
-	28,
-	2500,
-	70
+	1500,
+	30,
+	1500,
+	60
 ];
 
 var mqtt = {
