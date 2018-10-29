@@ -1,5 +1,5 @@
 //************ SETTINGS **************
-var WinLevel = 2;
+var WinLevel = 1;
 var WinnerCount = 0;
 StageIndexMax = 8;
 DevTypeCount = 4;
