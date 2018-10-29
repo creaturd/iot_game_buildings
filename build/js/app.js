@@ -5,13 +5,6 @@ StageIndexMax = 8;
 DevTypeCount = 4;
 var ResetLevelIfNotContinuous = false;
 
-Limits = [
-	1500,
-	30,
-	1500,
-	60
-];
-
 var mqtt = {
 	host: "localhost",
 	port: 1884,
@@ -20,35 +13,6 @@ var mqtt = {
 
 //************************************
 
-DevType = {
-	luminosity : 0,
-	Temperature : 1,
-	Accelerometer : 2,
-	Proximity : 3
-}
-
-Params = [
-	"luminocity",
-	"temperature",
-	"luminocity",
-	"humidity"
-]
-
-GroupName = [
-	"security",
-	"robots",
-	"power",
-	"skynet",
-	"transport"
-];
-Group = {
-	Security : 0,
-	Robots : 1,
-	Power : 2,
-	Skynet : 3,
-	Transport : 4
-};
-var GroupCount = Object.keys(Group).length;
 var Winners = [];
 var Active = false;
 var Connected = false;
@@ -74,36 +38,45 @@ function init() {
 		}
 	});
 
-	for (var eui in Devices) {
-		Devices[eui].eui = eui;
+	for (var group in Buildings) {
+		Values[group] = {};
+		for(var devtype in Buildings[group]) {
+			Values[group][devtype] = { value:0, level: 0, win: false} ;
+			var euis = Buildings[group][devtype];
+			for(var i in euis) {
+				var eui = euis[i];
+				Devices[eui] = { eui: eui, type: devtype, group: group };
+			}
+		}
 	}
 	
 	var cont = $("#container2");
-	for (var name in Group) {
-		var gi = Group[name];
-		var g = $("<div>").addClass("group").attr("id","group_"+gi);	
-		var place = $("<div>").addClass("place").attr("id","place_"+gi);
-		var img = $("<img>").attr("id", "house_"+gi).attr("src", "img/house/0/0.png").addClass("house");
+	for (var group in Buildings) {
+		var g = $("<div>").addClass("group").attr("id","group_"+group);	
+		var place = $("<div>").addClass("place").attr("id","place_"+group);
+		var img = $("<img>").attr("id", "house_"+group).attr("src", "img/house/0/0.png").addClass("house");
 		g.append(place);
 		g.append(img);
-		g.append($("<p>").text(GroupName[gi]));
+		g.append($("<p>").text(group));
 		
-		var bg = $("<div>").addClass("bargroup").attr("id","bg_"+gi);
+		var bg = $("<div>").addClass("bargroup").attr("id","bg_"+group);
 		
 
 
-		for (var eui in Devices) {
-			if (Devices[eui].group == gi) {
-				var barcol = $("<div>").addClass("barcol").attr("id",eui);
-				var bar = $("<div>").addClass("bar").attr("device",Devices[eui].type);
-				for (var l = WinLevel; l > 0; l--) {
-					bar.append($("<div>").addClass("barcell").addClass("bc_"+l));
-				}
-				var icon = $("<img>").addClass("icon").attr("src","img/icons/dev/"+Devices[eui].type+".png").attr("title", eui);
-				barcol.append(bar);
-				barcol.append(icon);	
-				bg.append(barcol);
+		for (var devtype in Buildings[group]) {
+			var euis = Buildings[group][devtype];
+			var euis_str = euis.join(', ');
+			var id = group+'_'+devtype;
+			var barcol = $("<div>").addClass("barcol").attr("id",id);
+			var bar = $("<div>").addClass("bar").attr("device",devtype);
+			for (var l = WinLevel; l > 0; l--) {
+				bar.append($("<div>").addClass("barcell").addClass("bc_"+l));
 			}
+			var icon = $("<img>").addClass("icon").attr("src","img/icons/dev/"+devtype+".png").attr("title", euis_str);
+			barcol.append(bar);
+			barcol.append(icon);	
+			bg.append(barcol);
+			
 		}
 		g.append(bg);
 		cont.append(g);
@@ -113,20 +86,23 @@ function init() {
 }
 
 function blinkIcon(eui) {
-	$("#"+eui+" img.icon").addClass("iconq").addClass("con");
+	var device = Devices[eui];
+	var id = device.group + '_' + device.type;
+	$("#"+id+" img.icon").addClass("iconq").addClass("con");
 	setTimeout(function(){
-		$("#"+eui+" img.icon").removeClass("iconq")
+		$("#"+id+" img.icon").removeClass("iconq")
 	},500);
 }
 
 function updateUI(groups) {
-
-	for (var i = 0; i < groups.length; i++) {
-		if (groups[i].stage >= DevTypeCount && Winners[i] === undefined) {
+	var GroupCount = Object.keys(Buildings).length;
+	for (var group in groups) {
+		var DevTypeCount = Object.keys(Buildings[group]).length;
+		if (groups[group].stage >= DevTypeCount && Winners[group] === undefined) {
 			WinnerCount++;
-			Winners[i] = WinnerCount;
-			$("#place_"+i).text(Winners[i]).addClass("p"+WinnerCount);
-			$("#bg_"+i).hide();
+			Winners[group] = WinnerCount;
+			$("#place_"+group).text(Winners[group]).addClass("p"+WinnerCount);
+			$("#bg_"+group).hide();
 
 			if (WinnerCount >= GroupCount) {
 				$("#cloud0").fadeOut(2000).animate({top:"-35%"}, 2000);
@@ -135,16 +111,17 @@ function updateUI(groups) {
 				$("#sun").animate({top:"40px"}, 1500);
 			}
 		}
-		var imgIndex = Math.round(StageIndexMax * (groups[i].stage / DevTypeCount));
-		$("#house_"+i).attr("src", "img/house/0/"+imgIndex+".png");
+		var imgIndex = Math.round(StageIndexMax * (groups[group].stage / DevTypeCount));
+		$("#house_"+group).attr("src", "img/house/0/"+imgIndex+".png");
 
-		for (d = 0; d < groups[i].devices.length; d++) {
-			if (groups[i].devices[d].level >= WinLevel) {
-				$("#"+groups[i].devices[d].eui).addClass("barfull");
-			} else if (groups[i].devices[d].level == 0) {
-				$("#"+groups[i].devices[d].eui+" div").removeClass("full");
+		for (var type in groups[group].devTypes) {
+			var id = group + '_' + type;
+			if (groups[group].devTypes[type].level >= WinLevel) {
+				$("#"+id).addClass("barfull");
+			} else if (groups[group].devTypes[type].level == 0) {
+				$("#"+id+" div").removeClass("full");
 			} else {	
-				$("#"+groups[i].devices[d].eui+" div.bc_"+groups[i].devices[d].level).addClass("full");
+				$("#"+id+" div.bc_"+groups[group].devTypes[type].level).addClass("full");
 			}
 		}
 		
@@ -153,10 +130,12 @@ function updateUI(groups) {
 
 function update() {
 	var groups = [];
-	for (var eui in Devices) {
-		if (typeof groups[Devices[eui].group] === "undefined") groups[Devices[eui].group] = {stage:0, devices:[]};
-		groups[Devices[eui].group].devices[Devices[eui].type] = Devices[eui]; 
-		if (Devices[eui].win === true) groups[Devices[eui].group].stage++;
+	for (var group in Buildings) {
+		groups[group] = {stage:0, devTypes:{}};
+		for (type in Buildings[group]) {
+			groups[group].devTypes[type] = Values[group][type]; 
+			if (Values[group][type].win === true) groups[group].stage++;
+		}
 	}
 	updateUI(groups);
 }
@@ -170,24 +149,31 @@ function test() {
 	function boom() {
 		var euis = Object.keys(Devices);
 		var count = euis.length;
-		var index = 0;
-		
+		var index = 0	
+
+
 		for (key in Devices) {
-			if (Devices[key].win === true) index++;
+			var group = Devices[key].group;
+			var type = Devices[key].type;	
+			if (Values[group][type].win === true) index++;
 		}
 		
 		if (index >= count) {
 			return stop();
 		}
 
+		var group;
+		var type;
 		do {
 			index = Math.floor(Math.random() * count);
-		} while (Devices[euis[index]].win);
+			group = Devices[euis[index]].group;
+			type = Devices[euis[index]].type;	
+		} while (Values[group][type].win);
 
 		var topic = "devices/lora/server";
 		var dev = Devices[euis[index]];
 		var msg = {data:{},status:{devEUI:dev.eui}};
-		msg.data[Params[dev.type]] = Math.floor(Math.random()*Limits[dev.type]*0.4+Limits[dev.type]*0.9);
+		msg.data[dev.type] = Math.floor(Math.random()*Limits[dev.type]*0.4+Limits[dev.type]*0.9);
 
 		Client.publish(topic, JSON.stringify(msg));
 	}
@@ -248,28 +234,30 @@ function onMessageArrived(message) {
 			
 		
 
-		var type = Devices[eui].type;
-		var value = 0;
+	var type = Devices[eui].type;
+	var group = Devices[eui].group;
+	var value = obj.data[type];
 
-		value = obj.data[Params[type]];
-
-		if (value >= Limits[type]) {
-			if (Devices[eui].value >= Limits[type] || ResetLevelIfNotContinuous === false) {
-				Devices[eui].level++;
-				
-				if (Devices[eui].level >= WinLevel) {
-					Devices[eui].win = true;
-					console.log("Module " + eui + " wins!");
-				}
-			} else if (ResetLevelIfNotContinuous === true) {
-				Devices[eui].level = 1;
+	if (value >= Limits[type]) {
+		if (Values[group][type].value >= Limits[type] || ResetLevelIfNotContinuous === false) {
+			Values[group][type].level++;
+			
+			if (Values[group][type].level >= WinLevel) {
+				Values[group][type].win = true;
+				console.log("Group `" + group + '` has done '+ type);
 			}
-		/*} else if (ResetLevelIfNotContinuous === true) {
-			Devices[eui].level = 0;*/
+		} else if (ResetLevelIfNotContinuous === true) {
+			Values[group][type].level = 1;
 		}
+	}
 
-		Devices[eui].value = value;
-   		update();
+	Values[group][type].value = value;
+
+	try {
+		update();
+	} catch (e) {
+		console.log(e);
+	}
 	
     	if (obj.data !== undefined) {
 
@@ -293,7 +281,7 @@ $(document).ready(function(){
 	init();
 	
 	if (mqtt.host == "localhost") {
-		host = prompt("MQTT Broker address", "localhost");
+		host = prompt("MQTT Broker address", "192.168.97.1");
 		connect(host);
 	} else {
 		connect();
