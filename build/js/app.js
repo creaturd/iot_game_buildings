@@ -205,63 +205,67 @@ function onConnectionLost(responseObject) {
 	}
 };
 function onMessageArrived(message) {
-   	var str = message.payloadString;
-	var obj = undefined;
-	var eui = "";
-	console.log(str);
-
-	if (Active === false) return;
-
 	try {
-		obj = JSON.parse(str);
-		if (obj.data == undefined || obj.status == undefined) return;
-		eui = obj.status.devEUI.toLowerCase();
-		blinkIcon(eui);
-	}
-    	catch (e) {
-		console.error("Not a valid JSON: " + str);
-		return;
-    	}
+		var str = message.payloadString;
+		var obj = undefined;
+		var eui = "";
+		console.log(str);
 
-		
-	try {
-		if (Devices[eui].win == true) return;
-	}
-    	catch (e) {
-		console.error("EUI is not registered: " + eui);
-		return;
-    	}
-			
-		
+		if (Active === false) return;
 
-	var type = Devices[eui].type;
-	var group = Devices[eui].group;
-	var value = obj.data[type];
-
-	if (value >= Limits[type]) {
-		if (Values[group][type].value >= Limits[type] || ResetLevelIfNotContinuous === false) {
-			Values[group][type].level++;
-			
-			if (Values[group][type].level >= WinLevel) {
-				Values[group][type].win = true;
-				console.log("Group `" + group + '` has done '+ type);
-			}
-		} else if (ResetLevelIfNotContinuous === true) {
-			Values[group][type].level = 1;
+		try {
+			obj = JSON.parse(str);
+			if (obj.data == undefined || obj.status == undefined) return;
+			eui = obj.status.devEUI.toLowerCase();
+			blinkIcon(eui);
 		}
+			catch (e) {
+			console.error("Not a valid JSON: " + str);
+			return;
+			}
+
+			
+		try {
+			if (Devices[eui].win == true) return;
+		}
+			catch (e) {
+			console.error("EUI is not registered: " + eui);
+			return;
+			}
+				
+			
+
+		var type = Devices[eui].type;
+		var group = Devices[eui].group;
+		var value = obj.data[type];
+
+		if (value >= Limits[type]) {
+			if (Values[group][type].value >= Limits[type] || ResetLevelIfNotContinuous === false) {
+				Values[group][type].level++;
+				
+				if (Values[group][type].level >= WinLevel) {
+					Values[group][type].win = true;
+					console.log("Group `" + group + '` has done '+ type);
+				}
+			} else if (ResetLevelIfNotContinuous === true) {
+				Values[group][type].level = 1;
+			}
+		}
+
+		Values[group][type].value = value;
+
+		try {
+			update();
+		} catch (e) {
+			console.log(e);
+		}
+		
+			if (obj.data !== undefined) {
+
+			}
+	} catch(E) {
+		console.error(E);
 	}
-
-	Values[group][type].value = value;
-
-	try {
-		update();
-	} catch (e) {
-		console.log(e);
-	}
-	
-    	if (obj.data !== undefined) {
-
-    	}
 
 };
 
