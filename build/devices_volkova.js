@@ -23,12 +23,12 @@ Profiles.volkova = {
 			'temperature' : ["807b859020000518"]
 		},
 		'skynet' : {
-			'luminocity' : ["807b859020000520"],
-			'temperature' : ["807b85902000051a"]
+			'luminocity' : ["807b85902000035b"],
+			'temperature' : ["807b85902000036a"]
 		},
 		'robots' : {
-			'luminocity' : ["807b85902000021c"],
-			'temperature' : ["807b859020000409"]
+			'luminocity' : ["807b85902000049d"],
+			'temperature' : ["807b85902000040c"]
 		},
 	}
 }
