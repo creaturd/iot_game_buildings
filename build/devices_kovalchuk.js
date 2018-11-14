@@ -1,7 +1,8 @@
 var Devices = {};
 var Values = {};
 
-var DefaultBroker = "192.168.97.1";
+//var DefaultBroker = "192.168.97.1";
+var DefaultBroker = "iot.games";
 
 Limits = {
 	'luminocity' : 600,
