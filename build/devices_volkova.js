@@ -1,4 +1,4 @@
-Profiles.kovalchuk = {
+Profiles.volkova = {
 	// DefaultBroker = "192.168.97.1",
 	DefaultBroker : "iot.games",
 
@@ -11,24 +11,24 @@ Profiles.kovalchuk = {
 
 	Buildings : {
 		'security' : {
-			'luminocity' : ["807b85902000035b"],
-			'temperature' : ["807b85902000036a"]
+			'luminocity' : ["807b859020000407"],
+			'temperature' : ["807b85902000051c"]
 		},
 		'power' : {
-			'luminocity' : ["807b859020000406"],
-			'temperature' : ["807b859020000408"]
+			'luminocity' : ["807b85902000035f"],
+			'temperature' : ["807b85902000045f"]
 		},
 		'transport' : {
-			'luminocity' : ["807b85902000049d"],
-			'temperature' : ["807b85902000040c"]
+			'luminocity' : ["807b85902000040e"],
+			'temperature' : ["807b859020000518"]
 		},
 		'skynet' : {
-			'luminocity' : ["807b85902000050a"],
-			'temperature' : ["807b85902000050b"]
+			'luminocity' : ["807b859020000520"],
+			'temperature' : ["807b85902000051a"]
 		},
 		'robots' : {
-			'luminocity' : ["807b85902000051d"],
-			'temperature' : ["807b859020000570"]
+			'luminocity' : ["807b85902000021c"],
+			'temperature' : ["807b859020000409"]
 		},
 	}
 }

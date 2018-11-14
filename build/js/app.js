@@ -5,6 +5,14 @@ StageIndexMax = 8;
 DevTypeCount = 4;
 var ResetLevelIfNotContinuous = false;
 
+var Devices = {};
+var Values = {};
+var Profiles = {};
+
+var DefaultBroker;
+var Limits;
+var Buildings;
+
 var mqtt = {
 	host: "localhost",
 	port: 1884,
@@ -282,6 +290,23 @@ function connect(host) {
 }
 
 $(document).ready(function(){
+	var names = [];
+	var i = 1;
+	var confirmMsg = "Choose user profile index. Available values:\n";
+	for(var name in Profiles) {
+		confirmMsg += i + ': ' + name + "\n";
+		names[i++] = name;
+	}
+	var index = 0;
+	do {
+		index = prompt(confirmMsg);
+	} while (names[index] == undefined);
+
+	var profile = Profiles[names[index]];
+	DefaultBroker = profile.DefaultBroker;
+	Limits = profile.Limits;
+	Buildings = profile.Buildings;
+
 	init();
 	
 	if (mqtt.host == "localhost") {
