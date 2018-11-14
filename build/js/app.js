@@ -285,7 +285,7 @@ $(document).ready(function(){
 	init();
 	
 	if (mqtt.host == "localhost") {
-		host = prompt("MQTT Broker address", "192.168.97.1");
+		host = prompt("MQTT Broker address", DefaultBroker);
 		connect(host);
 	} else {
 		connect();

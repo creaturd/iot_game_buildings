@@ -24,12 +24,11 @@ var Buildings = {
 	'skynet' : {
 		'luminocity' : ["807b859020000520"],
 		'temperature' : ["807b85902000051a"]
-	}
-/*,
+	},
 	'robots' : {
 		'luminocity' : ["807b85902000021c"],
 		'temperature' : ["807b859020000409"]
-	}*/
+	},
 }
 /* EXAMPLE:
 var Buildings = {
