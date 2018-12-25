@@ -31,7 +31,8 @@ Client = undefined;
 
 function init() {
 	$("body").keydown(function(event) {
-		if (event.which == 84 && event.shiftKey && event.ctrlKey) {
+console.log(event.which);
+		if (event.which == 68 /* LETTER D */ && event.altKey && event.ctrlKey) {
 			event.preventDefault();
 			if (!Connected) return;
 			console.log("Test mode!");
@@ -60,21 +61,22 @@ function init() {
 	
 	var cont = $("#container2");
 	for (var group in Buildings) {
-		var g = $("<div>").addClass("group").attr("id","group_"+group);	
-		var place = $("<div>").addClass("place").attr("id","place_"+group);
-		var img = $("<img>").attr("id", "house_"+group).attr("src", "img/house/0/0.png").addClass("house");
+		var gid = group.toString().replace(' ','_');
+		var g = $("<div>").addClass("group").attr("id","group_"+gid);	
+		var place = $("<div>").addClass("place").attr("id","place_"+gid);
+		var img = $("<img>").attr("id", "house_"+gid).attr("src", "img/house/0/0.png").addClass("house");
 		g.append(place);
 		g.append(img);
 		g.append($("<p>").text(group));
 		
-		var bg = $("<div>").addClass("bargroup").attr("id","bg_"+group);
+		var bg = $("<div>").addClass("bargroup").attr("id","bg_"+gid);
 		
 
 
 		for (var devtype in Buildings[group]) {
 			var euis = Buildings[group][devtype];
 			var euis_str = euis.join(', ');
-			var id = group+'_'+devtype;
+			var id = gid+'_'+devtype;
 			var barcol = $("<div>").addClass("barcol").attr("id",id);
 			var bar = $("<div>").addClass("bar").attr("device",devtype);
 			for (var l = WinLevel; l > 0; l--) {
@@ -95,7 +97,7 @@ function init() {
 
 function blinkIcon(eui) {
 	var device = Devices[eui];
-	var id = device.group + '_' + device.type;
+	var id = device.group.replace(' ','_') + '_' + device.type;
 	$("#"+id+" img.icon").addClass("iconq").addClass("con");
 	setTimeout(function(){
 		$("#"+id+" img.icon").removeClass("iconq")
@@ -105,12 +107,13 @@ function blinkIcon(eui) {
 function updateUI(groups) {
 	var GroupCount = Object.keys(Buildings).length;
 	for (var group in groups) {
+		var gid = group.toString().replace(' ','_');
 		var DevTypeCount = Object.keys(Buildings[group]).length;
 		if (groups[group].stage >= DevTypeCount && Winners[group] === undefined) {
 			WinnerCount++;
 			Winners[group] = WinnerCount;
-			$("#place_"+group).text(Winners[group]).addClass("p"+WinnerCount);
-			$("#bg_"+group).hide();
+			$("#place_"+gid).text(Winners[group]).addClass("p"+WinnerCount);
+			$("#bg_"+gid).hide();
 
 			if (WinnerCount >= GroupCount) {
 				$("#cloud0").fadeOut(2000).animate({top:"-35%"}, 2000);
@@ -120,7 +123,7 @@ function updateUI(groups) {
 			}
 		}
 		var imgIndex = Math.round(StageIndexMax * (groups[group].stage / DevTypeCount));
-		$("#house_"+group).attr("src", "img/house/0/"+imgIndex+".png");
+		$("#house_"+gid).attr("src", "img/house/0/"+imgIndex+".png");
 
 		for (var type in groups[group].devTypes) {
 			var id = group + '_' + type;
@@ -306,6 +309,10 @@ $(document).ready(function(){
 	DefaultBroker = profile.DefaultBroker;
 	Limits = profile.Limits;
 	Buildings = profile.Buildings;
+	
+	if (profile.WinLevel !== undefined) {
+	  WinLevel = profile.WinLevel;
+	}
 
 	init();
 	
