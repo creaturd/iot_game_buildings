@@ -2,34 +2,46 @@ Profiles.kovalchuk = {
 	// DefaultBroker = "192.168.97.1",
 	DefaultBroker : "iot.games",
 
+	WinLevel: 2,
+
 	Limits : {
-		'luminocity' : 600,
-		'temperature' : 28,
+		'luminocity' : 1500,
+		'temperature' : 30,
 		'humidity' : 50,
-		'pressure' : 900
+		'pressure' : 1
 	},
 
 	Buildings : {
-		'security' : {
-			'luminocity' : ["807b85902000035b"],
-			'temperature' : ["807b85902000036a"]
+		'Калининград' : {
+			'luminocity' : ["807b859020000408"],
+			'temperature' : ["807b85902000036a"],
+			'humidity' : ["807b85902000051c"],
+			'pressure' : ["807b85902000050b"],
 		},
-		'power' : {
-			'luminocity' : ["807b859020000406"],
-			'temperature' : ["807b859020000408"]
+
+		'Москва' : {
+			'luminocity' : ["807b85902000035f"],
+			'temperature' : ["807b85902000040c"],
+			'humidity' : ["807b859020000406"],
+			'pressure' : ["807b85902000040e"],
 		},
-		'transport' : {
-			'luminocity' : ["807b85902000049d"],
-			'temperature' : ["807b85902000040c"]
+		'Новосибирск' : {
+			'luminocity' : ["807b859020000401"],
+			'temperature' : ["807b85902000035b"],
+			'humidity' : ["807b859020000407"],
+			'pressure' : ["807b85902000049d"],
 		},
-		'skynet' : {
-			'luminocity' : ["807b85902000050a"],
-			'temperature' : ["807b85902000050b"]
+		'Владивосток' : {
+			'luminocity' : ["807b859020000570"],
+			'temperature' : ["807b859020000518"],
+			'humidity' : ["807b85902000050a"],
+			'pressure' : ["807b859020000239"],
 		},
-		'robots' : {
+/*		'robots' : {
 			'luminocity' : ["807b85902000051d"],
 			'temperature' : ["807b859020000570"]
 		},
+*/
 	}
 }
 /* EXAMPLE:
