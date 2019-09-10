@@ -3,32 +3,32 @@ Profiles.kovalchuk = {
 	DefaultBroker : "iot.games",
 
 	Limits : {
-		'luminocity' : 600,
+		'luminocity' : 5000,
 		'temperature' : 28,
-		'humidity' : 50,
+		'humidity' : 70,
 		'pressure' : 900
 	},
 
 	Buildings : {
-		'security' : {
-			'luminocity' : ["807b85902000035b"],
-			'temperature' : ["807b85902000036a"]
+		'Москва' : {
+			'luminocity' : ["807b859020000408"],
+			'temperature' : ["807b85902000036a"],
+			'humidity' : ["807b85902000051c"]
 		},
-		'power' : {
-			'luminocity' : ["807b859020000406"],
-			'temperature' : ["807b859020000408"]
+		'Нью-Йорк' : {
+			'luminocity' : ["807b859020000401"],
+			'temperature' : ["807b85902000035b"],
+			'humidity' : ["807b859020000407"]
 		},
-		'transport' : {
-			'luminocity' : ["807b85902000049d"],
-			'temperature' : ["807b85902000040c"]
+		'Владивосток' : {
+			'luminocity' : ["807b859020000570"],
+			'temperature' : ["807b859020000518"],
+			'humidity' : ["807b85902000050a"]
 		},
-		'skynet' : {
-			'luminocity' : ["807b85902000050a"],
-			'temperature' : ["807b85902000050b"]
-		},
-		'robots' : {
-			'luminocity' : ["807b85902000051d"],
-			'temperature' : ["807b859020000570"]
+		'Бужумбура' : {
+			'luminocity' : ["807b85902000035f"],
+			'temperature' : ["807b85902000040c"],
+			'humidity' : ["807b859020000406"]
 		},
 	}
 }

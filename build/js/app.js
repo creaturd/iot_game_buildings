@@ -32,7 +32,7 @@ Client = undefined;
 function init() {
 	$("body").keydown(function(event) {
 console.log(event.which);
-		if (event.which == 68 /* LETTER D */ && event.altKey && event.ctrlKey) {
+		if (event.which == 66 /* LETTER B */ && event.altKey && event.ctrlKey) {
 			event.preventDefault();
 			if (!Connected) return;
 			console.log("Test mode!");
