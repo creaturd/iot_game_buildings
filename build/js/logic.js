@@ -204,7 +204,6 @@ function onConnected() {
 	$("#error").hide();
 	Connected = true;
 	Client.subscribe("devices/lora/#");
-        Client.subscribe("sensornode/#");
 };
 
 function onConnectionLost(responseObject) {
@@ -214,101 +213,14 @@ function onConnectionLost(responseObject) {
 	Connected = false;
 	if (responseObject.errorCode !== 0) {
 
-	} 
+	}
 };
-
-var Nodes = {};
-
-function addNode(node, sensor, axis, value) {
-    var nn = false;
-    var val = Math.round(Number(value));
-    
-    if (Nodes[node] === undefined) {
-        Nodes[node] = {};
-        nn = true;
-    }
-    if (Nodes[node][sensor] === undefined) {
-        Nodes[node][sensor] = {};
-        Nodes[node][sensor].value = val;
-        Nodes[node][sensor].original = val;
-        Nodes[node][sensor].delta = 0.;
-        nn = true;
-    }
-
-    if (nn) return false;
-    
-    
-    Nodes[node][sensor].delta = Math.abs(Nodes[node][sensor].original - val);
-    Nodes[node][sensor].value = val;
-    return Nodes[node][sensor].delta;
-}
-
-function resend_sensornode(message) {
-    topic_items = message.topic.split('/');
-    if (!topic_items.length || topic_items[0] != 'sensornode') {
-        return false;
-    
-    }
-    var axis = topic_items[3].toLowerCase();
-    var node = topic_items[1].toLowerCase();
-    var sensor = topic_items[2].toLowerCase();
-    var value = Number(message.payloadString);
-    
-    if ((sensor === 'noise' && axis !== 'decibels') || (sensor !== 'noise' && axis !== 'x')) {
-        return true;
-    }
-    
-    
-    if (sensor == 'pressure') {
-        value *= 10;
-    }
-    if (sensor == 'lightintensity') {
-        sensor = 'luminocity';
-    }
-    if (sensor == 'linearacceleration') {
-        sensor = 'accelerometer';
-    }
-    
-    var delta = addNode(node, sensor, axis, value);
-    if (delta) {
-        var msg = {
-            data : {
-            },
-            status : {
-                devEUI: node + '_' + sensor,
-                rssi: 0,
-                temperature: 0,
-                battery: 0
-            }
-        }
-        switch(sensor) {
-            case 'pressure':
-                msg.data[sensor] = delta;
-                break;
-            default:
-                msg.data[sensor] = value;
-        }
-        
-        var topic = 'devices/lora/' + msg.status.devEUI;
-        var message = JSON.stringify(msg);
-        console.log(message);
-        Client.publish(topic, message);
-    }
-    
-    return true;
-}
-
 function onMessageArrived(message) {
 	try {
 		var str = message.payloadString;
 		var obj = undefined;
 		var eui = "";
-		//console.log(message);
-                
-                if (resend_sensornode(message)) {
-                    return;
-                }
-                
+		console.log(str);
 
 		if (Active === false) return;
 

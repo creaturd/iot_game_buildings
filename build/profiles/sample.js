@@ -1,5 +1,5 @@
 Profiles.sample = {				// DO NOT FORGET TO CHANGE NAME OF PROFILE
-	DefaultBroker : "localhost",
+	DefaultBroker : "localhost:1884",
 
 	WinLevel: 2,
 
