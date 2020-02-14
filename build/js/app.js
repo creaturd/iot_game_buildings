@@ -237,9 +237,8 @@ function addNode(node, sensor, axis, value) {
 
     if (nn) return false;
     
-    
-    Nodes[node][sensor].delta = Math.abs(Nodes[node][sensor].original - val);
-    Nodes[node][sensor].value = val;
+    Nodes[node][sensor].value = (Nodes[node][sensor].value + val)/2;
+    Nodes[node][sensor].delta = Math.abs(Nodes[node][sensor].original - Nodes[node][sensor].value);
     return Nodes[node][sensor].delta;
 }
 
